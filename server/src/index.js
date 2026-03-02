@@ -5,11 +5,13 @@ import cookieParser from "cookie-parser"
 import { connectDb } from "./lib/db.js"
 import messageRouter from "./routes/messageRoute.js"
 import cors from "cors";
+
+import { app,server } from "./lib/socket.js"
 dotenv.config()
-const app=express()
+// const app=express() 
 
 
-app.use(express.json())
+app.use(express.json({limit:"2mb"}))
 app.use(cookieParser())
 app.use(cors({
     origin:"http://localhost:5173",
@@ -17,9 +19,9 @@ app.use(cors({
 }))
 
 app.use('/api/auth',authRouter)
-app.use('/api/auth',messageRouter)
+app.use('/api/messages',messageRouter)
 
-app.listen(5001,()=>{
+server.listen(5001,()=>{
     console.log("server is running on the port 5001")
     connectDb()
 })
