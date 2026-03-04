@@ -5,11 +5,12 @@ import cookieParser from "cookie-parser"
 import { connectDb } from "./lib/db.js"
 import messageRouter from "./routes/messageRoute.js"
 import cors from "cors";
+import path from "path"
 
 import { app,server } from "./lib/socket.js"
 dotenv.config()
 // const app=express() 
-
+const __dirname=
 
 app.use(express.json({limit:"2mb"}))
 app.use(cookieParser())
@@ -20,6 +21,14 @@ app.use(cors({
 
 app.use('/api/auth',authRouter)
 app.use('/api/messages',messageRouter)
+
+if(process.env.NODE_ENV=="production"){
+    app.use(express.static(path.join(__dirname,"../frontend/dist ")))
+
+    app.get("*",(req,res)=>{
+        res.sendFile(path.join(__dirname,"../frontend","dist","index.html"))
+    })
+}
 
 server.listen(5001,()=>{
     console.log("server is running on the port 5001")
